@@ -33,7 +33,7 @@ import jdk.vm.ci.meta.ResolvedJavaField;
 @TargetClass(value = Baz.class)
 final class Target_invokevirtualcons_Baz {
 
-	@Alias //
+    @Alias //
     Target_Foo foo;
 	
     @Inject @RecomputeFieldValue(kind = Kind.Custom, declClass = MyNeedsReinitializationProvider.class) //
@@ -46,7 +46,7 @@ final class Target_invokevirtualcons_Baz {
     @Inject @RecomputeFieldValue(kind = Kind.Reset)//
     byte[] injectedByteArray;
     	
-	@Alias
+    @Alias
     @TargetElement(name = TargetElement.CONSTRUCTOR_NAME)
     native void originalConstructor(Target_Foo foo, String dir);
 	
@@ -68,7 +68,6 @@ final class MyNeedsReinitializationProvider implements RecomputeFieldValue.Custo
 
     @Override
     public Object compute(MetaAccessProvider metaAccess, ResolvedJavaField original, ResolvedJavaField annotated, Object receiver) {
-    	System.out.println("compute");
     	return STATUS_NEEDS_REINITIALIZATION;
     }
 }
@@ -80,11 +79,9 @@ class BazAccessors {
      */
 
     static byte[] getByteArray(Target_invokevirtualcons_Baz that) {
-    	System.out.println("needsReinitialization == " + that.needsReinitialization);
         if (that.needsReinitialization != MyNeedsReinitializationProvider.STATUS_REINITIALIZED) {
             reinitialize(that);
         }
-        System.out.println("getByteArray()");
         return that.injectedByteArray;
     }
     
@@ -118,8 +115,9 @@ class BazAccessors {
          * with the same value it is already set to, so this is harmless. All other field writes are
          * redirected to the set-accessors of this class and write the injected fields.
          *
+	 * This method invocation triggers the assertion in the debug JVM.
          */
-        //that.originalConstructor(that.foo, System.getProperty("user.dir"));
+        that.originalConstructor(that.foo, System.getProperty("user.dir"));
 
         /*
          * Now the object is completely re-initialized and can be used by any thread without

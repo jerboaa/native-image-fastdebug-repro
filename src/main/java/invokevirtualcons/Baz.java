@@ -9,7 +9,6 @@ public class Baz {
 	
 	// package-private
 	Baz(Foo foo, String dir) {
-		System.out.println("constructor original");
 		this.foo = foo;
 		this.byteArray = dir.getBytes();
 		byte[] copy = new byte[byteArray.length - 3];
